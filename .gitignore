@@ -1,2 +1,2 @@
-.pytest_cache/
+src/**/.pytest_cache/
 data/
