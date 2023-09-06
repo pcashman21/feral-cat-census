@@ -10,7 +10,7 @@ def main():
     
     """
     # Prefix for the image path.
-    image_path_prefix = '/Users/Paul/Documents/Documents - Paul Cashman’s MacBook Pro/Machine Learning/feral-cat-census/data/'
+    image_path_prefix = '/Users/Paul/Documents/Documents - Paul Cashman’s MacBook Pro/Machine Learning/feral-cat-census/data/original_images/'
     # Radius in miles of the roaming area of a cat.
     roaming_radius = 1
     # Minimum number of images in a cluster.
@@ -25,7 +25,7 @@ def main():
     usable_df  = df_get_usable_images(df)
 
     # Get the image coordinates.
-    usable_df = get_all_gps(usable_df)
+    usable_df = get_all_gps(usable_df, image_path_prefix)
     
     # Cluster the data.
     df = geo_cluster.geo_cluster(usable_df, epsilon = roaming_radius, min_samples=min_cluster_size)
