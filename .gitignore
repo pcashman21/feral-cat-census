@@ -1,2 +1,5 @@
 src/**/.pytest_cache/
+src/**/__pycache__/
 data/
+credentials.json
+token.json
