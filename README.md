@@ -33,6 +33,6 @@ The `move_files_to_idg_folder.ipynb` notebook does the train/test split on the i
 
 Once the images have been moved into the ImageDataGenerator file structure, I ran the `SelectUsableImages.ipynb` notebook.  This takes a pre-trained VGG model without its top layers, adds new classification layers, trains it on the `usable` and `unusable` images passed by the ImageDataGenerator, gets the classification and confusion matrices, and saves the model at `My Drive/Cat images/models/select_usable_images.keras`.  
 
-It then loads the saved model and does a prediction on a selected image.
+It then loads the saved model and does a prediction on a selected (transformed) image.
 
 
