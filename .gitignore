@@ -1,5 +1,6 @@
 src/**/.pytest_cache/
 src/**/__pycache__/**
+src/outdated_code/
 data/
 .DS_Store
 src/.DS_Store
