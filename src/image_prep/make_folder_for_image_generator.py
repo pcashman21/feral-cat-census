@@ -1,6 +1,4 @@
 from tensorflow.keras.preprocessing.image import load_img, save_img 
-from tensorflow.keras.preprocessing.image import img_to_array 
-from tensorflow.keras.applications.vgg16 import preprocess_input 
 
 def move_image(x, path_to_read, path_to_write, train_class_limits, test_class_limits, train_class_counts, test_class_counts):
     """
@@ -16,28 +14,28 @@ def move_image(x, path_to_read, path_to_write, train_class_limits, test_class_li
     """
         
     # Read in image
-    image = load_img(path_to_read + x['file_path'], target_size=(224, 224))
+    image = load_img(path_to_read + x['file_path'], target_size=(244, 244))
         
     # Write image to appropriate directory.  Note that the file name is 
     # sequentially numbered in each class, which is an ImageDataGenerator requirement.
     if x['usable'] == 0:
         if train_class_counts[0] < train_class_limits[0]:
             train_class_counts[0] += 1
-            save_img(path_to_write + 'train/0/' + str(train_class_counts[0]) + '.jpeg', image)  
+            save_img(path_to_write + 'train/unusable/' + str(train_class_counts[0]) + '.jpg', image)  
         elif test_class_counts[0] < test_class_limits[0]:
             test_class_counts[0] += 1
-            save_img(path_to_write + 'test/0/' + str(test_class_counts[0]) + '.jpeg', image)
+            save_img(path_to_write + 'test/unusable/' + str(test_class_counts[0]) + '.jpg', image)
             
     else:
         if train_class_counts[1] < train_class_limits[1]:
             train_class_counts[1] += 1
-            save_img(path_to_write + 'train/1/' + str(train_class_counts[1]) + '.jpeg', image)
+            save_img(path_to_write + 'train/usable/' + str(train_class_counts[1]) + '.jpg', image)
         elif test_class_counts[1] < test_class_limits[1]:
             test_class_counts[1] += 1
-            save_img(path_to_write + 'test/1/' + str(test_class_counts[1]) + '.jpeg', image)
+            save_img(path_to_write + 'test/usable/' + str(test_class_counts[1]) + '.jpg', image)
 
 
-def make_folder_for_image_generator(df, path_to_read, path_to_write, train_test_split=0.7):
+def make_folder_for_image_generator(df, path_to_read, path_to_write, train_test_split=0.8):
     """
     Move images from resized_images folder to a folder structure that 
         can be used by the ImageDataGenerator class.
