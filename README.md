@@ -35,4 +35,35 @@ Once the images have been moved into the ImageDataGenerator file structure, I ra
 
 It then loads the saved model and does a prediction on a selected (transformed) image.
 
+# Google Drive file structure
+
+Google Drive holds the data used in model creation and testing.  The directory structure is as follows:
+
+`Cat images`                        Main folder for all feral-cat-census project data
+    `original_images`               Raw jpegs of Cashman cats (not used)
+    `resized_images`                Resized jpegs of Cashman cats (not used)
+    `kaggle_cats`                   Folders with Kaggle cats images
+    `ImageDataGenerator_images`     Subset of Kaggle cats images (from CAT_00 principally) organized
+                                        into `train` and `test` folders, and thence into the two
+                                        classes `usable` and `unusable` for training the usable/unusable image model
+    `models`                        Holds the saved usable/unusable images model
+    `cluster_test_data`             Folders to hold test data for image clustering code
+        `case_1`,...,`case_N`       Folder holding data for each test case (see below)
+
+# Image clustering test cases
+
+Each dataset is assumed to be one geocluster, and the purpose is to figure out the number of unique
+cats in each geocluster.  The test cases aim to have different kinds of distributions of unique cats.
+
+`Case` `Description`                        `Images` `Unique` `Im 1` `Im 2` `Im 3` `Im 4` `Im 5`
+   1    All unique                              5       5        1      1      1      1      1
+   2    All the same                            5       1        5
+   3    Lopsided, with multiple unique         10       5        6      1      1      1      1
+   4    Equal # of multiple image copies       10       5        2      2      2      2      2
+   5    Very lopsided, 2 unique                10       2        9      1
+
+The notebook `src/notebooks/generate_cluster_test_data.ipynb` will generate the test data as above.
+
+
+
 
