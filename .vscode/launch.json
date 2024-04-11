@@ -6,12 +6,15 @@
     "configurations": [
         
         {
-            "name": "Python: Current File",
-            "type": "python",
+            "name": "Python: main.py",
+            "type": "debugpy",
             "request": "launch",
-            "program": "${file}",
+            "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal",
-            "justMyCode": true
+            "justMyCode": true,
+            "autoReload": {
+                "enable": true
+            }
         }
     ]
 }
