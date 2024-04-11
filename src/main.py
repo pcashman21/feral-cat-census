@@ -1,8 +1,10 @@
 import glob
 import os
 import pandas as pd
+from database.postgres import PostgresDB
 from geo_cluster.get_all_gps import get_all_gps
 from geo_cluster import geo_cluster
+
 
 def main():
     """
@@ -17,6 +19,22 @@ def main():
             If photo had no GPS data, cluster ID is 0.
     
     """
+
+    # Database connection details.  @todo Move these to a config file!
+    host = "localhost"
+    database = "feral_cat_census_db"
+    user = "paul"
+    password = "L0t$OfF0toz"
+
+    # Create an instance of the PostgresDB class
+    postgres_db = PostgresDB(host, database, user, password)
+
+    # Check if the connection was established successfully
+    if postgres_db.connection:
+      print("Successfully connected to the PostgreSQL database!")
+    else:
+      print("Failed to connect to the PostgreSQL database.")
+
     # Prefix for the image path.
     original_photo_path_prefix = '/Users/Paul/Documents/Documents - Paul Cashman’s MacBook Pro/Machine Learning/feral-cat-census/data/box_downloads/'
     # Radius in miles of the roaming area of a cat.

@@ -1,6 +1,5 @@
 from sklearn.cluster import DBSCAN
 import numpy as np
-import pandas as pd
 
 def geo_cluster(df,epsilon,min_samples,**kwargs):
     """

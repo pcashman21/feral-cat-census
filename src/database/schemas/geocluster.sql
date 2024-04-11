@@ -5,9 +5,10 @@ CREATE TABLE IF NOT EXISTS geocluster (
     -- of the geocluster's centroid.
     id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
     
-    -- Lat/long of the geocluster centroid
-    centroid_latitude FLOAT NOT NULL, 
-    centroid_longitude FLOAT NOT NULL,
+    -- Lat/long of the geocluster centroid.  Note: Some photos have no
+    -- GPS data.  These will be put into one (giant) geocluster whose
+    -- centroid is (0,0).
+    centroid POINT NOT NULL,
 
     -- Approval status (has a person agreed that all feature
     -- clusters are as they should be) 
