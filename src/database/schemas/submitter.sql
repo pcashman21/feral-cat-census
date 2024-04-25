@@ -9,3 +9,5 @@ CREATE TABLE IF NOT EXISTS submitter (
     -- the submitter or to the photos being submitted
     location_string text NULL
 );
+
+CREATE INDEX IF NOT EXISTS submitter_email ON submitter (email_address);

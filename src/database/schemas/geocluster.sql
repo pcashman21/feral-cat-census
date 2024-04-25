@@ -7,8 +7,19 @@ CREATE TABLE IF NOT EXISTS geocluster (
     
     -- Lat/long of the geocluster centroid.  Note: Some photos have no
     -- GPS data.  These will be put into one (giant) geocluster whose
-    -- centroid is (0,0).
+    -- centroid is (0,0).  This way the geocluster will show up on a map
+    -- with all other clusters and can be edited and approved.
     centroid POINT NOT NULL,
+
+    -- The DBSCAN algorithm generates cluster IDs starting with 0.  
+    dbscan_cluster_number INTEGER NOT NULL,
+
+    -- We keep the DBSCAN cluster number along with the geocluster_generation as indexed
+    -- fields, so we can recluster all photos at regular intervals (e.g., 3 months),
+    -- adding new photos along the way, while keeping the historical cluster
+    -- information if necessary.  This way we can distinguish two geoclusters with
+    -- the same DBSCAN cluster number that were generated at different times.
+    geocluster_generation_number INTEGER NOT NULL,
 
     -- Approval status (has a person agreed that all feature
     -- clusters are as they should be) 
@@ -21,3 +32,5 @@ CREATE TABLE IF NOT EXISTS geocluster (
     population_lower_bound INTEGER DEFAULT 0 NOT NULL,
     population_upper_bound INTEGER DEFAULT 0 NOT NULL 
 );
+
+CREATE INDEX IF NOT EXISTS geocluster_dbscan_index ON geocluster (dbscan_cluster_number, geocluster_generation_number);
