@@ -10,5 +10,5 @@ CREATE TABLE IF NOT EXISTS segmented_image (
     -- instance segmentation model.  Of the form "cat-x",
     -- where x is an integer starting at 0 for the first
     -- cat extracted, 1 for second, etc.
-    cat_id VARCHAR(8)
+    cat_id VARCHAR(8) NOT NULL
 );

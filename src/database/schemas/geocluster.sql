@@ -25,12 +25,20 @@ CREATE TABLE IF NOT EXISTS geocluster (
     -- clusters are as they should be) 
     approval_status BOOLEAN DEFAULT FALSE,
 
-    -- Editing status: Is someone editing this cluster now?
-    editing_status BOOLEAN DEFAULT FALSE,
+    -- Editing status: Is someone editing this cluster now?  If so, 
+    -- the value is the editing user's user ID, else NULL if no one
+    -- is editing the geocluster
+    editing_user_id uuid DEFAULT NULL,
 
     -- Upper and lower bounds on number of cats in this geocluster
     population_lower_bound INTEGER DEFAULT 0 NOT NULL,
-    population_upper_bound INTEGER DEFAULT 0 NOT NULL 
+    population_upper_bound INTEGER DEFAULT 0 NOT NULL,
+
+    -- Population percentile in which the midpoint of the population
+    -- falls, relative to all geoclusters in this generation.  Initially 0,
+    -- will get set when all the generation's geoclusters approval_status 
+    -- values are True.
+    population_percentile INTEGER DEFAULT 0 NOT NULL
 );
 
 CREATE INDEX IF NOT EXISTS geocluster_dbscan_index ON geocluster (dbscan_cluster_number, geocluster_generation_number);
