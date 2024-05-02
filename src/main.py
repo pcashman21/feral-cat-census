@@ -1,37 +1,72 @@
-from df_utilities.df_get_usable_images import df_get_usable_images
-from df_utilities.df_read_csv import df_read_csv
-from df_utilities.df_write_csv import df_write_csv
+import glob
+import os
+import pandas as pd
+from database.postgres import PostgresDB
 from geo_cluster.get_all_gps import get_all_gps
 from geo_cluster import geo_cluster
 
+
 def main():
     """
-    Main function.
+    Main function.  Takes photos from a given location and generates geoclusters.
+
+    Output: a CSV file named image_index_with_gps_and_clusters.csv, in the directory with the photos,
+    where the CSV file has columns:
+
+        filename: Full pathname of a photo file
+        gps: (latitude, longitude) of photo, or (None, None) if no GPS data present
+        cluster: integer cluster ID from DBSCAN, starting at 1 if photo had GPS data.
+            If photo had no GPS data, cluster ID is 0.
     
     """
+
+    # Database connection details.  @todo Move these to a config file!
+    host = "localhost"
+    database = "feral_cat_census_db"
+    user = "paul"
+    password = "L0t$OfF0toz"
+
+    # Create an instance of the PostgresDB class
+    postgres_db = PostgresDB(host, database, user, password)
+
+    # Check if the connection was established successfully
+    if postgres_db.connection:
+      print("Successfully connected to the PostgreSQL database!")
+    else:
+      print("Failed to connect to the PostgreSQL database.")
+
     # Prefix for the image path.
-    image_path_prefix = '/Users/Paul/Documents/Documents - Paul Cashman’s MacBook Pro/Machine Learning/feral-cat-census/data/original_images/'
+    original_photo_path_prefix = '/Users/Paul/Documents/Documents - Paul Cashman’s MacBook Pro/Machine Learning/feral-cat-census/data/box_downloads/'
     # Radius in miles of the roaming area of a cat.
     roaming_radius = 1
     # Minimum number of images in a cluster.
     min_cluster_size = 3
-
-
-    # Read the image index into a dataframe.
-    df = df_read_csv(image_path_prefix + 'image_index.csv')
-
-    # Get only rows with usable images (i.e., images that have
-    # only one cat).
-    usable_df  = df_get_usable_images(df)
-
-    # Get the image coordinates.
-    usable_df = get_all_gps(usable_df, image_path_prefix)
     
-    # Cluster the data.
-    df = geo_cluster.geo_cluster(usable_df, epsilon = roaming_radius, min_samples=min_cluster_size)
+    # Get a list of all the original photos and make a dataframe out of it
+    files_jpg = glob.glob(os.path.join(original_photo_path_prefix, '*.jpg')) + glob.glob(os.path.join(original_photo_path_prefix, '*.JPG'))
+    files_jpeg = glob.glob(os.path.join(original_photo_path_prefix, '*.jpeg')) + glob.glob(os.path.join(original_photo_path_prefix, '*.JPEG'))
+    files_png = glob.glob(os.path.join(original_photo_path_prefix, '*.png')) + glob.glob(os.path.join(original_photo_path_prefix, '*.PNG'))
+    original_photo_names = sorted(files_jpg + files_jpeg + files_png)
+    df = pd.DataFrame(original_photo_names, columns=['filename'])
+
+    # Get the image coordinates.  Some photos may not have GPS data.
+    df_with_gps, df_without_gps = get_all_gps(df)
+    print(f'Loaded {len(df_with_gps)} photos with GPS data and {len(df_without_gps)} without GPS data')
+    
+    # Cluster the data for photos with GPS data
+    if len(df_with_gps) > 0:
+        df_with_gps = geo_cluster.geo_cluster(df_with_gps, epsilon = roaming_radius, min_samples=min_cluster_size)
+    
+    # Set cluster ID to 0 for photos without GPS data
+    df_without_gps['cluster'] = 0
+
+    # Merge the dataframes
+    df_merged = pd.concat([df_without_gps, df_with_gps], ignore_index=True)
+    # Force the cluster ID to be an integer, not a float
+    df_merged['cluster'] = df_merged['cluster'].astype(int)
     
     # Write the data to a csv file.
-    df_write_csv(usable_df, image_path_prefix + 'image_index_with_gps_and_clusters.csv')
+    df_merged.to_csv(os.path.join(original_photo_path_prefix, 'image_index_with_gps_and_clusters.csv'), index=False)
 
 
 main()

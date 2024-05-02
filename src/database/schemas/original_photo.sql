@@ -6,6 +6,6 @@ CREATE TABLE IF NOT EXISTS original_photo (
     image_filename VARCHAR(255) NOT NULL, 
     
     -- Lat/long where photo was taken must be present for geoclustering to work
-    latitude FLOAT NOT NULL, 
-    longitude FLOAT NOT NULL
+    -- However, some photos have no GPS data, so allow this field to be null.
+    lat_long POINT
 );

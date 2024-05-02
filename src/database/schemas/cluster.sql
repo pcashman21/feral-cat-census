@@ -9,6 +9,6 @@ CREATE TABLE IF NOT EXISTS cluster (
     average_similarity FLOAT NUll,
 
     -- Maximum similarity between the image in this singleton cluster
-    -- and all other simngleton clusters in this geocluster
+    -- and all other singleton clusters in this geocluster
     maximum_similarity FLOAT NULL
 );
