@@ -6,5 +6,10 @@ CREATE TABLE IF NOT EXISTS geocluster_generation (
     -- clusters starting with 0, we need to have a generation number to distinguish
     -- different instantiations of DBSCAN cluster N.  
     generation_number INTEGER NOT NULL DEFAULT 0 PRIMARY KEY,
+
+    -- The generation_radius is the radius, in miles, used in the DBSCAN clustering algorithm
+    -- to create the geoclusters in this generation.  It is possible to have different radii for
+    -- different generations, to have a coarser- or finer-grained depiction of the geocluster locations.
+    generation_radius FLOAT NOT NULL DEFAULT 1,
     time_of_generation TIMESTAMP NOT NULL
 );
